@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiaomu-QuickPrompt</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="panel-body">
+  <main class="panel-shell">
+    <header class="panel-header">
+      <div>
+        <h1>Qiaomu-QuickPrompt</h1>
+        <p>提示词与常用语</p>
+      </div>
+      <button class="primary-button" id="newItemButton">新增</button>
+    </header>
+
+    <section class="control-strip">
+      <label class="search-box panel-search">
+        <span>搜索</span>
+        <input id="searchInput" type="search" placeholder="搜索标题、内容、标签、简写">
+      </label>
+      <label class="toggle-line">
+        <input type="checkbox" id="shortcutToggle">
+        <span>启用 ^ 简写替换</span>
+      </label>
+    </section>
+
+    <nav class="category-tabs" id="categoryTabs" aria-label="分类"></nav>
+
+    <section class="panel-layout" id="panelLayout">
+      <div class="prompt-list" id="promptList"></div>
+    </section>
+
+    <dialog class="editor-dialog" id="editorDialog">
+      <form class="editor-panel" id="editorForm">
+        <input type="hidden" id="itemId">
+        <div class="editor-heading">
+          <h2 id="editorTitle">新增内容</h2>
+          <button type="button" class="ghost-button danger" id="deleteButton">删除</button>
+        </div>
+
+        <label class="field">
+          <span>标题</span>
+          <input id="titleInput" type="text" required placeholder="例如：文章总结 Prompt">
+        </label>
+
+        <label class="field">
+          <span>分类</span>
+          <input id="categoryInput" type="text" list="categoryOptions" placeholder="Prompt">
+          <datalist id="categoryOptions"></datalist>
+        </label>
+
+        <label class="field">
+          <span>简写（^）</span>
+          <input id="shortcutInput" type="text" placeholder="sum">
+        </label>
+
+        <label class="field">
+          <span>标签（可选）</span>
+          <input id="tagsInput" type="text" placeholder="写作, 总结, 回复">
+        </label>
+
+        <label class="field">
+          <span>内容</span>
+          <textarea id="contentInput" required placeholder="输入 Prompt 或常用语"></textarea>
+        </label>
+
+        <label class="toggle-line inline-toggle">
+          <input type="checkbox" id="favoriteInput">
+          <span>收藏到快速列表</span>
+        </label>
+
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" id="cancelButton">取消</button>
+          <button type="button" class="secondary-button" id="copyButton">复制</button>
+          <button type="submit" class="primary-button">保存</button>
+        </div>
+
+        <p class="status-line" id="statusLine" role="status"></p>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <footer class="data-actions">
+      <button class="secondary-button" id="exportButton">导出 JSON</button>
+      <label class="secondary-button file-button">
+        导入 JSON
+        <input type="file" id="importInput" accept="application/json,.json">
+      </label>
+    </footer>
+  </main>
+
+  <script src="seed-prompts.js"></script>
+  <script src="storage.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+:root {
+  --surface: oklch(0.985 0.008 95);
+  --surface-raised: oklch(0.965 0.011 95);
+  --surface-strong: oklch(0.925 0.015 95);
+  --ink: oklch(0.22 0.035 82);
+  --muted: oklch(0.48 0.032 82);
+  --line: oklch(0.84 0.018 88);
+  --accent: oklch(0.58 0.12 145);
+  --accent-ink: oklch(0.985 0.01 145);
+  --danger: oklch(0.55 0.17 28);
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --radius: 8px;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.popup-body {
+  width: 380px;
+  min-height: 520px;
+}
+
+.popup-shell,
+.panel-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.popup-header,
+.panel-header,
+.editor-heading,
+.toolbar-row,
+.control-strip,
+.editor-actions,
+.data-actions,
+.prompt-title-row,
+.meta-row {
+  display: flex;
+  align-items: center;
+}
+
+.popup-header,
+.panel-header,
+.editor-heading {
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 18px;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.panel-header h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.popup-header p,
+.panel-header p,
+.prompt-card p,
+.field small,
+.empty-state span,
+.status-line {
+  color: var(--muted);
+}
+
+.popup-header p,
+.panel-header p {
+  margin-top: var(--space-xs);
+  font-size: 12px;
+}
+
+.search-box,
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.search-box span,
+.field span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: oklch(0.998 0.004 95);
+  color: var(--ink);
+  outline: none;
+}
+
+input {
+  height: 38px;
+  padding: 0 var(--space-md);
+}
+
+textarea {
+  min-height: 190px;
+  padding: var(--space-md);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 78%);
+}
+
+.toolbar-row,
+.category-tabs,
+.data-actions {
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.chip,
+.tab-button,
+.secondary-button,
+.primary-button,
+.ghost-button,
+.icon-button,
+.copy-button,
+.file-button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-height: 34px;
+  padding: 0 var(--space-md);
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+
+.icon-button {
+  width: 34px;
+  padding: 0;
+  font-size: 16px;
+}
+
+.chip,
+.tab-button {
+  min-height: 30px;
+  font-size: 12px;
+}
+
+.chip.is-active,
+.tab-button.is-active,
+.primary-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.secondary-button:hover,
+.ghost-button:hover,
+.icon-button:hover,
+.copy-button:hover,
+.chip:hover,
+.tab-button:hover {
+  background: var(--surface-strong);
+}
+
+.primary-button:hover {
+  filter: brightness(0.97);
+}
+
+.prompt-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.prompt-list.compact {
+  max-height: 330px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.prompt-card {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: oklch(0.994 0.006 95);
+}
+
+.prompt-card.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent), var(--surface) 90%);
+}
+
+.compact-card {
+  align-items: center;
+}
+
+.prompt-main {
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.prompt-title-row {
+  gap: var(--space-sm);
+}
+
+.prompt-title-row h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorite-mark {
+  color: oklch(0.65 0.12 82);
+  font-size: 12px;
+}
+
+.prompt-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.meta-row {
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+code {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.copy-button {
+  flex: 0 0 auto;
+}
+
+.copy-button.is-copied {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent), var(--surface) 82%);
+}
+
+.popup-footer {
+  display: flex;
+}
+
+.popup-footer .secondary-button {
+  width: 100%;
+}
+
+.panel-body {
+  min-width: 360px;
+}
+
+.panel-shell {
+  min-height: 100vh;
+}
+
+.control-strip {
+  align-items: end;
+  gap: var(--space-md);
+}
+
+.panel-search {
+  flex: 1;
+}
+
+.toggle-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--muted);
+  font-size: 13px;
+  user-select: none;
+}
+
+.toggle-line input {
+  width: 16px;
+  height: 16px;
+}
+
+.panel-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1.05fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.panel-layout .prompt-list {
+  max-height: calc(100vh - 210px);
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.editor-dialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(760px, calc(100vh - 32px));
+  padding: 0;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+}
+
+.editor-dialog::backdrop {
+  background: color-mix(in oklch, var(--ink), transparent 58%);
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: 0 24px 60px color-mix(in oklch, var(--ink), transparent 82%);
+}
+
+.editor-panel[hidden] {
+  display: none;
+}
+
+.danger {
+  color: var(--danger);
+}
+
+.ghost-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.field small {
+  line-height: 1.4;
+}
+
+.inline-toggle {
+  justify-content: flex-start;
+}
+
+.editor-actions {
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.status-line {
+  min-height: 18px;
+  font-size: 12px;
+}
+
+.toast {
+  position: fixed;
+  right: var(--space-lg);
+  bottom: var(--space-lg);
+  z-index: 10;
+  max-width: calc(100vw - 32px);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--surface);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-xl);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .panel-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-panel {
+    position: static;
+  }
+}
