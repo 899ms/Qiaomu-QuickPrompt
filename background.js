@@ -1,4 +1,6 @@
 importScripts("seed-prompts.js");
+importScripts("seed-image-prompts.js");
+importScripts("seed-qiaomu-prompts.js");
 importScripts("storage.js");
 
 chrome.runtime.onInstalled.addListener(() => {

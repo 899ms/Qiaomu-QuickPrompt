@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Qiaomu-QuickPrompt",
+  "name": "乔木快捷提示词",
   "version": "0.1.0",
   "minimum_chrome_version": "116",
-  "description": "Manage prompts and common phrases, copy quickly, and expand shortcuts with ^.",
+  "description": "Manage prompts and common phrases, copy quickly, and expand shortcuts with @.",
   "permissions": ["storage", "clipboardWrite", "sidePanel", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "action": {
-    "default_title": "Qiaomu-QuickPrompt",
+    "default_title": "乔木快捷提示词",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",

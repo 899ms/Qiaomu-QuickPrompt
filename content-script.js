@@ -1,9 +1,20 @@
-const TRIGGER = "^";
-const TOKEN_PATTERN = /([^\s\^]{1,64})\^$/;
 let cachedItems = [];
-let cachedSettings = { shortcutExpansionEnabled: true };
+let cachedSettings = { shortcutExpansionEnabled: true, shortcutTrigger: "@" };
 let isComposing = false;
 let cacheReady = false;
+
+function getTrigger() {
+  return cachedSettings.shortcutTrigger || "@";
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getTokenPattern() {
+  const trigger = escapeRegExp(getTrigger());
+  return new RegExp(`([^\\s${trigger}]{1,64})${trigger}$`);
+}
 
 function isEditableTarget(target) {
   if (!target || target.disabled || target.readOnly) {
@@ -37,7 +48,7 @@ function isEditableTarget(target) {
 }
 
 function normalizeShortcut(shortcut) {
-  return String(shortcut || "").trim().replace(/\^+$/g, "");
+  return String(shortcut || "").trim().replace(/[\^@/;#]+$/g, "");
 }
 
 async function findPrompt(shortcut) {
@@ -180,7 +191,7 @@ async function tryExpandFromTarget(target) {
   }
 
   const textBeforeCursor = getTextBeforeCursor(target);
-  const match = textBeforeCursor.match(TOKEN_PATTERN);
+  const match = textBeforeCursor.match(getTokenPattern());
   if (!match) {
     return;
   }
@@ -191,7 +202,7 @@ async function tryExpandFromTarget(target) {
     return;
   }
 
-  const shortcutWithTrigger = `${shortcut}${TRIGGER}`;
+  const shortcutWithTrigger = `${shortcut}${getTrigger()}`;
   const replaced = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
     ? replaceInTextField(target, shortcutWithTrigger, item.content)
     : replaceInContentEditable(target, shortcutWithTrigger, item.content);
@@ -202,13 +213,13 @@ async function tryExpandFromTarget(target) {
 }
 
 function handleInput(event) {
-  if (event.data === TRIGGER) {
+  if (event.data === getTrigger()) {
     tryExpandFromTarget(event.target);
   }
 }
 
 function handleKeyup(event) {
-  if (event.key === TRIGGER || event.code === "Digit6") {
+  if (event.key === getTrigger()) {
     tryExpandFromTarget(event.target);
   }
 }

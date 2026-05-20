@@ -1,7 +1,9 @@
 const state = {
   items: [],
+  settings: {},
   query: "",
-  filter: "all"
+  filter: "all",
+  previewId: null
 };
 
 const searchInput = document.getElementById("searchInput");
@@ -9,6 +11,14 @@ const promptList = document.getElementById("promptList");
 const openSidePanel = document.getElementById("openSidePanel");
 const manageButton = document.getElementById("manageButton");
 const chips = Array.from(document.querySelectorAll(".chip"));
+const imagePreviewOverlay = document.getElementById("imagePreviewOverlay");
+const previewImage = document.getElementById("previewImage");
+const previewTitle = document.getElementById("previewTitle");
+const previewMeta = document.getElementById("previewMeta");
+const previewPrompt = document.getElementById("previewPrompt");
+const closePreviewButton = document.getElementById("closePreviewButton");
+const previewCopyButton = document.getElementById("previewCopyButton");
+const previewSourceLink = document.getElementById("previewSourceLink");
 
 function matchesQuery(item, query) {
   if (!query) {
@@ -19,6 +29,7 @@ function matchesQuery(item, query) {
     item.title,
     item.content,
     item.category,
+    getPromptTypeLabel(item.promptType),
     item.shortcut,
     ...(item.tags || [])
   ].join(" ").toLowerCase();
@@ -68,6 +79,7 @@ function renderItems() {
 
   promptList.innerHTML = items.map((item) => `
     <article class="prompt-card compact-card" data-id="${item.id}">
+      ${renderPreviewThumb(item)}
       <div class="prompt-main">
         <div class="prompt-title-row">
           <h2>${escapeHtml(item.title)}</h2>
@@ -76,12 +88,38 @@ function renderItems() {
         <p>${escapeHtml(item.content)}</p>
         <div class="meta-row">
           <span>${escapeHtml(item.category)}</span>
-          ${item.shortcut ? `<code>${escapeHtml(item.shortcut)}^</code>` : ""}
+          <span>${escapeHtml(getPromptTypeLabel(item.promptType))}</span>
+          ${item.shortcut ? `<code>${escapeHtml(item.shortcut)}${escapeHtml(state.settings.shortcutTrigger || "@")}</code>` : ""}
         </div>
       </div>
       <button class="copy-button" data-copy-id="${item.id}">复制</button>
     </article>
   `).join("");
+}
+
+function renderPreviewThumb(item) {
+  if (item.promptType !== "image" || !item.previewImage || !item.previewImage.thumbnailUrl) {
+    return "";
+  }
+
+  const alt = item.previewImage.alt || item.title;
+  return `
+    <button class="preview-thumb compact-thumb" type="button" data-preview-id="${item.id}" title="查看参考图" aria-label="查看「${escapeHtml(item.title)}」参考图">
+      <img src="${escapeHtml(item.previewImage.thumbnailUrl)}" alt="${escapeHtml(alt)}" loading="lazy">
+    </button>
+  `;
+}
+
+function getPromptTypeLabel(promptType) {
+  if (promptType === "image") {
+    return "生图";
+  }
+
+  if (promptType === "video") {
+    return "生视频";
+  }
+
+  return "文本";
 }
 
 function escapeHtml(value) {
@@ -105,6 +143,37 @@ async function copyItem(id) {
   renderItems();
 }
 
+function showImagePreview(id) {
+  const item = state.items.find((candidate) => candidate.id === id);
+  if (!item || item.promptType !== "image" || !item.previewImage) {
+    return;
+  }
+
+  state.previewId = id;
+  previewImage.src = item.previewImage.fullUrl || item.previewImage.thumbnailUrl;
+  previewImage.alt = item.previewImage.alt || item.title;
+  previewTitle.textContent = item.title;
+  previewMeta.textContent = [item.category, item.source?.sourceLabel].filter(Boolean).join(" · ");
+  previewPrompt.textContent = item.content;
+
+  if (item.source?.url) {
+    previewSourceLink.href = item.source.url;
+    previewSourceLink.hidden = false;
+  } else {
+    previewSourceLink.hidden = true;
+    previewSourceLink.removeAttribute("href");
+  }
+
+  imagePreviewOverlay.hidden = false;
+  closePreviewButton.focus();
+}
+
+function hideImagePreview() {
+  state.previewId = null;
+  imagePreviewOverlay.hidden = true;
+  previewImage.removeAttribute("src");
+}
+
 async function openPanel() {
   try {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -122,6 +191,7 @@ async function openPanel() {
 async function init() {
   await window.QuickPromptStore.ensureSeedData();
   state.items = await window.QuickPromptStore.getItems();
+  state.settings = await window.QuickPromptStore.getSettings();
   renderItems();
 }
 
@@ -139,6 +209,13 @@ chips.forEach((chip) => {
 });
 
 promptList.addEventListener("click", (event) => {
+  const previewButton = event.target.closest("[data-preview-id]");
+  if (previewButton) {
+    event.stopPropagation();
+    showImagePreview(previewButton.dataset.previewId);
+    return;
+  }
+
   const button = event.target.closest("[data-copy-id]");
   if (button) {
     copyItem(button.dataset.copyId);
@@ -147,5 +224,22 @@ promptList.addEventListener("click", (event) => {
 
 openSidePanel.addEventListener("click", openPanel);
 manageButton.addEventListener("click", openPanel);
+closePreviewButton.addEventListener("click", hideImagePreview);
+previewCopyButton.addEventListener("click", () => {
+  if (state.previewId) {
+    copyItem(state.previewId);
+  }
+});
+imagePreviewOverlay.addEventListener("click", (event) => {
+  if (event.target === imagePreviewOverlay) {
+    hideImagePreview();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !imagePreviewOverlay.hidden) {
+    hideImagePreview();
+  }
+});
 
 init();
